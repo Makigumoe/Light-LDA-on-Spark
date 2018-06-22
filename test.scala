@@ -35,7 +35,7 @@ object test {
   def test_trans_df(df: DataFrame, spark: SparkSession): Unit = {
     //--------------------------------------
     val d = new Documents
-    d.trans_df_2_rdd(df, "sentence", 20)
+    d.trans_df_2_rdd(df, "sentence", 5)
     //    d.save_word_index()
     val model = new LightLDAModel(spark)
     model.init(d)
@@ -59,7 +59,7 @@ object test {
       .setMinTF(2) //单篇文本中出现次数
       .fit(df)
     df = cvModel.transform(df)
-    df = df.repartition(20).persist(StorageLevel.MEMORY_AND_DISK)
+    df = df.repartition(5).persist(StorageLevel.MEMORY_AND_DISK)
     println("开始训练")
     val tmr_start = System.currentTimeMillis()
     val lda = new UsingSpark.testingLDA.ssLDA()
@@ -102,6 +102,6 @@ object test {
     //测试从df进行转换
     test_trans_df(get_df(spark), spark)
 
-    //    compare_spark_lda(get_df(spark))
+    compare_spark_lda(get_df(spark))
   }
 }
